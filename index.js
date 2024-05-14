@@ -109,6 +109,7 @@ app.get("/details", async (req, res)=> {
       const result = await db.query("SELECT * FROM porscheusers WHERE id=$1",[currentId.id]);
       console.log("Database name is: ", result.rows[0].name)
       const details = JSON.parse(result.rows[0].details)
+      console.log(details)
       res.send({
         name:result.rows[0].name,
         details: details
@@ -123,14 +124,29 @@ app.get("/custom", async (req, res) => {
     res.send(status)
 })
 
+
 app.post("/custom", async (req, res)=>{
-    const details = JSON.stringify(req.body)
   try{
-    await db.query("UPDATE porscheusers SET details=$1 WHERE id=$2",[details, currentId.id]); 
+    const result = await db.query("SELECT details FROM porscheusers WHERE id=$1",[currentId.id]);
+    if(result.rows[0].details){  //if one object its already in the array push the new one in the array
+      const details = req.body
+      const dbArrayofObject =  JSON.parse(result.rows[0].details)      
+      dbArrayofObject.push(details)
+     const Json = JSON.stringify(dbArrayofObject)
+      await db.query("UPDATE porscheusers SET details=$1 WHERE id=$2",[Json, currentId.id]); 
+    }
+    else{         //push the first  array of Json
+    const details = req.body
+    let arrayy=[]
+    arrayy.push(details)
+    const JsonDetails = JSON.stringify(arrayy)
+    await db.query("UPDATE porscheusers SET details=$1 WHERE id=$2",[JsonDetails, currentId.id]); 
+    }
     }catch(err){
       console.log(err)
     }
 });
+
 
 app.get("/signup", async (req, res)=>{
     res.send(accountExists)
