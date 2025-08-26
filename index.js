@@ -162,7 +162,6 @@ var accountExists = { status: false };
 
 app.post("/signup", async (req, res) => {
   const body = req.body;
-  console.log("This is the body: ", body);
   if (body.mName.length === 0) {
     var fullName = body.fName + " " + body.lName;
   } else {
@@ -214,7 +213,6 @@ var currentId = { id: "" };
 
 app.post("/login-password", async function (req, res) {
   const email = req.body.email;
-  console.log("This is the email: ", email);
   const loginPassword = req.body.password;
   console.log(email, loginPassword);
   try {
