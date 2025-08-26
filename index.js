@@ -9,7 +9,7 @@ import passport from "passport"
 import env from "dotenv"
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 5000;
 const saltRounds = 10;
 env.config();
 
@@ -18,7 +18,7 @@ const db = new pg.Client({
     host: process.env.PG_HOST,
     database: process.env.PG_DATABASE,
     password: process.env.PG_PASSWORD,
-    port: process.env.PG_PORT,
+    port: process.env.PG_PORT
   });
 db.connect();
 
@@ -34,6 +34,9 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get("/hello", async (req, res) => {
+    res.send("Hello from backend")
+})
 
 
 app.get("/model/:id", async (req, res) => {
@@ -122,10 +125,12 @@ app.get("/details", async (req, res)=> {
 
 app.get("/custom", async (req, res) => {
     res.send(status)
-})
+    console.log("This is the status: ", status)
+})  
 
 
 app.post("/custom", async (req, res)=>{
+    console.log("This is the current id on post /custom: ",  req.body)
   try{
     const result = await db.query("SELECT details FROM porscheusers WHERE id=$1",[currentId.id]);
     if(result.rows[0].details){  //if one object its already in the array push the new one in the array
