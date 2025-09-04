@@ -19,9 +19,6 @@ const db = new pg.Client({
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: process.env.PG_PORT,
-  ssl: {
-    rejectUnauthorized: false,
-  }
 });
 db.connect();
 
@@ -231,6 +228,9 @@ app.post("/login-password", async function (req, res) {
             status.status = true;
             currentId.id = user.id;
             console.log("This is the current id: ", currentId);
+            setTimeout(() => {
+              status.status = false;
+            }, 900000);
           } else {
             console.log("Incorrect Password");
           }
